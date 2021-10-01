@@ -7,11 +7,14 @@ using Data.Repositories;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyAPI.Models;
 using WebFramework.Api;
+using WebFramework.Api.Filters;
 
 namespace MyAPI.Controllers
 {
     [Route("api/[controller]")]
+    [ApiResultFilter]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -21,7 +24,7 @@ namespace MyAPI.Controllers
             this.userRepository = userRepository;
         }
         [HttpGet]
-        public async Task<ApiResult<List<User>>> Get(CancellationToken cancellationToken)
+        public async Task<List<User>> Get(CancellationToken cancellationToken)
         {
             var users = await userRepository.TableNoTracking.ToListAsync(cancellationToken);
             return users;
@@ -37,10 +40,17 @@ namespace MyAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ApiResult> Create(User user, CancellationToken cancellationToken)
+        public async Task<User> Create(UserDto userDto, CancellationToken cancellationToken)
         {
-            await userRepository.AddAsync(user, cancellationToken);
-            return new ApiResult(true, ApiResultStatusCode.Success);
+            var user = new User
+            {
+                Age = userDto.Age,
+                FullName = userDto.FullName,
+                Gender = userDto.Gender,
+                UserName = userDto.UserName
+            };
+            await userRepository.AddAsync(user, userDto.Password, cancellationToken);
+            return user;
           
         }
        

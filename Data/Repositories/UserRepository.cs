@@ -23,6 +23,12 @@ namespace Data.Repositories
             return Table.Where(p => p.UserName == username && p.PasswordHash == passwordHash).SingleOrDefaultAsync(cancellationToken);
 
         }
+        public Task AddAsync(User user, string passwor, CancellationToken cancellationToken)
+        {
+            var passwordHash = SecurityHelper.GetSha256Hash(passwor);
+            user.PasswordHash = passwordHash;
+            return base.AddAsync(user, cancellationToken);
+        }
 
     }
 }

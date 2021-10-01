@@ -40,18 +40,16 @@ namespace MyAPI
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler();
+                app.UseHsts();
             }
 
-            app.UseRouting();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
-            });
+            app.UseHttpsRedirection();
+           // app.UseMvc();
         }
     }
 }
