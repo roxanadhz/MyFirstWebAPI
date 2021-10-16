@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebFramework.Api
+namespace Common.Api
 {
     public enum ApiResultStatusCode
     {
@@ -23,5 +23,12 @@ namespace WebFramework.Api
 
         [Display(Name = "لیست خالی است")]
         ListEmpty = 4,
+
+        [Display(Name = "خطایی در پردازش رخ داد")]
+        LogicError = 5,
+
+        [Display(Name = " خطای احراز هویت")]
+        UnAuthorized = 6
+
     }
 }

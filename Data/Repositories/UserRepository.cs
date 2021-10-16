@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Exceptions;
 using Common.Utilities;
 using Entities;
 using Microsoft.EntityFrameworkCore;
@@ -23,11 +24,15 @@ namespace Data.Repositories
             return Table.Where(p => p.UserName == username && p.PasswordHash == passwordHash).SingleOrDefaultAsync(cancellationToken);
 
         }
-        public Task AddAsync(User user, string passwor, CancellationToken cancellationToken)
+        public async Task AddAsync(User user, string passwor, CancellationToken cancellationToken)
         {
+            var exists = await TableNoTracking.AnyAsync(p => p.UserName == user.UserName);
+            if (exists)
+                throw new BadRequestException("Profile name is repetitive");
+
             var passwordHash = SecurityHelper.GetSha256Hash(passwor);
             user.PasswordHash = passwordHash;
-            return base.AddAsync(user, cancellationToken);
+            await base.AddAsync(user, cancellationToken);
         }
 
     }

@@ -31,7 +31,7 @@ namespace MyAPI.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ApiResult<User>> Get(int id, CancellationToken cancellationToken)
+        public async Task<ApiResult<User>> GetById(int id, CancellationToken cancellationToken)
         {
             var user = await userRepository.GetByIdAsync(cancellationToken, id);
             if (user == null) 
@@ -40,7 +40,7 @@ namespace MyAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<User> Create(UserDto userDto, CancellationToken cancellationToken)
+        public async Task<ApiResult<User>> Create(UserDto userDto, CancellationToken cancellationToken)
         {
             var user = new User
             {

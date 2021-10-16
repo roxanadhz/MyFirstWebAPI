@@ -3,21 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common.Api;
 using Common.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace WebFramework.Api
 {
     public class ApiResult
     {
+        private bool v;
+        private ApiResultStatusCode serverError;
+
         public bool IsSuccess { get; set; }
         public ApiResultStatusCode StatusCode { get; set; }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Message { get; set; }
         public ApiResult(bool isSuccess, ApiResultStatusCode statusCode, string message = null)
         {
             IsSuccess = isSuccess;
             StatusCode = statusCode;
             Message = message ?? statusCode.ToDisplay();
+        }
+
+        public ApiResult(bool v, ApiResultStatusCode serverError)
+        {
+            this.v = v;
+            this.serverError = serverError;
         }
 
         public static implicit operator ApiResult(OkResult result)
@@ -54,6 +67,7 @@ namespace WebFramework.Api
     public class ApiResult<TData> : ApiResult
         where TData : class
     {
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public TData Data { get; set; }
         public ApiResult(bool isSuccess, ApiResultStatusCode statusCode, TData data, string message = null)
             : base(isSuccess, statusCode, message)
